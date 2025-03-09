@@ -1,0 +1,40 @@
+{
+  "name": "generic-service-be",
+  "version": "1.0.0",
+  "description": "this is used for sql with generic curd operation application will used for educational purpose only",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "migrate": "node db/migrate.js"
+  },
+  "author": "kishor sarkar",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-validator": "^7.2.1",
+    "geoip-lite": "^1.4.10",
+    "helmet": "^8.0.0",
+    "http-status-codes": "^2.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "md5": "^2.3.0",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.13.0",
+    "pg": "^8.13.3",
+    "pg-hstore": "^2.3.4",
+    "request-ip": "^3.3.0",
+    "sequelize": "^6.37.6",
+    "user-agent": "^1.0.4",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
