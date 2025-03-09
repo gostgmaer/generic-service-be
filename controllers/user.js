@@ -5,6 +5,11 @@ const {
   // const { FilterOptions } = require("../utils/service");
   // const User = require("../models/user");
   
+  const pool = require('../config/dbConnection'); // Import DB Connection
+const { v4: uuidv4 } = require('uuid');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const md5 = require('md5');
   const getUsers = async (req, res) => {
     try {
         let { sort = 'created_at', order = 'DESC', page = 1, limit = 10, filter } = req.query;
@@ -58,44 +63,43 @@ const {
     }
 };
   
-  // const getSingleUser = async (req, res) => {
-  //   const { id } = req.params;
-  //   if (!id) {
-  //     return res.status(StatusCodes.BAD_REQUEST).json({
-  //       message: "user id is not provide",
-  //       statusCode: StatusCodes.BAD_REQUEST,
-  //       status: ReasonPhrases.BAD_REQUEST,
-  //     });
-  //   } else {
-  //     try {
-  //       const userId = await User.findOne(
-  //         { _id: id },
-  //         "-__v -hash_password -resetToken -resetTokenExpiration -confirmToken -update_by"
-  //       );
-  
-  //       if (userId.id) {
-  //         return res.status(StatusCodes.OK).json({
-  //           message: `Userdata data Loaded Successfully!`,
-  //           statusCode: StatusCodes.OK,
-  //           status: ReasonPhrases.OK,
-  //           result: userId,
-  //         });
-  //       } else {
-  //         return res.status(StatusCodes.NOT_FOUND).json({
-  //           message: `No information found for given id`,
-  //           statusCode: StatusCodes.NOT_FOUND,
-  //           status: ReasonPhrases.NOT_FOUND,
-  //         });
-  //       }
-  //     } catch (error) {
-  //       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-  //         message: error.message,
-  //         statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-  //         status: ReasonPhrases.INTERNAL_SERVER_ERROR,
-  //       });
-  //     }
-  //   }
-  // };
+const getSingleUser = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+          message: "User ID is not provided",
+          statusCode: StatusCodes.BAD_REQUEST,
+          status: ReasonPhrases.BAD_REQUEST,
+      });
+  }
+
+  try {
+      // Fetch all fields for the given user ID
+      const [row] = await pool.execute(`SELECT * FROM users WHERE id = ?`, [id]);
+
+      if (row.length > 0) {
+          return res.status(StatusCodes.OK).json({
+              message: "User data loaded successfully!",
+              statusCode: StatusCodes.OK,
+              status: ReasonPhrases.OK,
+              result: row[0], // Return full user data
+          });
+      } else {
+          return res.status(StatusCodes.NOT_FOUND).json({
+              message: "No information found for the given ID",
+              statusCode: StatusCodes.NOT_FOUND,
+              status: ReasonPhrases.NOT_FOUND,
+          });
+      }
+  } catch (error) {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+          message: error.message,
+          statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+          status: ReasonPhrases.INTERNAL_SERVER_ERROR,
+      });
+  }
+};
   
   // const updateUser = async (req, res) => {
   //   const { id } = req.params;

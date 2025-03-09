@@ -45,6 +45,7 @@ const registerUser = async (req, res) => {
             [userId, full_name, email, hash_password, username]
         );
         if (user[0].affectedRows > 0) {
+            
             return res.status(StatusCodes.CREATED).json({
                 message: 'User created successfully',
                 status: ReasonPhrases.CREATED,
@@ -404,22 +405,35 @@ const confirmEmail = async (req, res) => {
 };
 
 const getUserProfile = async (req, res) => {
-    try {
-        const { id, full_name, email, username, created_at } = req.user;
+    const { id } = req.user;
 
-        return res.status(StatusCodes.OK).json({
-            message: 'Profile retrieved successfully',
-            user: { id, full_name, email, username, created_at },
-            statusCode: StatusCodes.OK,
-            status: ReasonPhrases.OK,
-        });
-    } catch (err) {
+    try {
+        // Fetch all fields for the given user ID
+        const [row] = await pool.execute(`SELECT * FROM users WHERE id = ?`, [id]);
+  
+        if (row.length > 0) {
+            return res.status(StatusCodes.OK).json({
+                message: "User data loaded successfully!",
+                statusCode: StatusCodes.OK,
+                status: ReasonPhrases.OK,
+                result: row[0], // Return full user data
+            });
+        } else {
+            return res.status(StatusCodes.NOT_FOUND).json({
+                message: "No information found for the given ID",
+                statusCode: StatusCodes.NOT_FOUND,
+                status: ReasonPhrases.NOT_FOUND,
+            });
+        }
+    } catch (error) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            message: err.message,
+            message: error.message,
             statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
             status: ReasonPhrases.INTERNAL_SERVER_ERROR,
         });
     }
+
+
 };
 
 

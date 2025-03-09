@@ -3,7 +3,7 @@ const express = require("express");
 const authRoute = express.Router();
 
 const {
-    registerUser,loginUser
+    registerUser,loginUser,getUserProfile
 //   signIn,
 //   resetPassword,
 //   singout,
@@ -13,8 +13,8 @@ const {
 //   accountConfirm,getProfile,getRefreshToken
 } = require("../controllers/auth");
 // const UpdatebyMiddleWare = require("../middleware/updatedBy");
-// const userMiddleWare = require("../middleware/userAccess");
-
+const authenticateUser = require("../middlewares/authMiddleware");
+const addMetadata = require("../middlewares/metadata");
 
 const {
   validateSignUpRequest,
@@ -26,7 +26,7 @@ const {
 } = require("../utils/validators/auth");
 
 
-authRoute.route("/user/auth/register").post(validateSignUpRequest, isRequestValidated,registerUser);
+authRoute.route("/user/auth/register").post(validateSignUpRequest, isRequestValidated,registerUser,addMetadata);
 // authRoute.route("/user/auth/confirm-account/:token").post(accountConfirm);
 authRoute.route("/user/auth/login").post(validateSignIpRequest, isRequestValidated,loginUser);
 // authRoute.route("/user/auth/verify/session").post(varifySession);
@@ -34,7 +34,7 @@ authRoute.route("/user/auth/login").post(validateSignIpRequest, isRequestValidat
 // authRoute.route("/user/auth/reset-password/:token").post(validateResetpassword,isRequestValidated,resetPassword);
 // authRoute.route("/user/auth/forget-password").post(validateForgetPassword,isRequestValidated,forgetPassword);
 // authRoute.route("/user/auth/change-password").post(userMiddleWare,UpdatebyMiddleWare,validateChangePassword,isRequestValidated,changedPassword);
-// authRoute.route("/user/auth/profile/:id").get(userMiddleWare,getProfile);
+authRoute.route("/user/auth/profile").get(authenticateUser,getUserProfile);
 // authRoute.route("/user/auth/logout").post(userMiddleWare,singout);
 
 module.exports = authRoute;

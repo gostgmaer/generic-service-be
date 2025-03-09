@@ -167,9 +167,9 @@ CREATE TABLE IF NOT EXISTS metadata (
 
   -- Status and Audit Logs
   metadata_status ENUM('active', 'inactive', 'deleted', 'archived', 'pending_review') DEFAULT 'active', 
-  created_by VARCHAR(36),
-  updated_by VARCHAR(36),
-  approved_by VARCHAR(36),
+ created_by VARCHAR(36) NULL,
+  updated_by VARCHAR(36) NULL,
+  approved_by VARCHAR(36) NULL,
   approval_status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
   approval_timestamp TIMESTAMP NULL DEFAULT NULL,
   change_reason TEXT,
