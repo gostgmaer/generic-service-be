@@ -4,7 +4,8 @@ const {
     getReasonPhrase,
     getStatusCode,
 } = require("http-status-codes");
-const pool = require('../config/dbConnection'); // Import DB Connection
+const pool = require('../../config/dbConnection'); // Import DB Connection
+const addMetadata = require('../middlewares/metadata'); 
 const { v4: uuidv4 } = require('uuid');
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -45,12 +46,12 @@ const registerUser = async (req, res) => {
             [userId, full_name, email, hash_password, username]
         );
         if (user[0].affectedRows > 0) {
-            
+
             return res.status(StatusCodes.CREATED).json({
                 message: 'User created successfully',
                 status: ReasonPhrases.CREATED,
                 statusCode: StatusCodes.CREATED,
-                resule: user
+                resule: {...user[0],userId}
             });
         }
 
