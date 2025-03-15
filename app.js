@@ -5,8 +5,9 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
-const authRoute = require("./routes/auth");
-const pool = require('./config/dbConnection'); // Import DB Connection
+const authRoute = require("./src/routes/auth");
+const pool = require('./src/config/dbConnection'); // Import DB Connection
+const userRouter = require('./src/routes/user');
 
 // Import Routes
 
@@ -38,17 +39,20 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // Routes
-// app.use('/api/auth', authRoutes);
-// app.use('/api/users', userRoutes);
-// app.use('/api/roles', roleRoutes);
 
 // Health Check Route
 app.get('/', (req, res) => {
+  res.status(200).json({ message: 'App is running 🚀' });
+});
+
+app.get('/api', (req, res) => {
   res.status(200).json({ message: 'API is running 🚀' });
 });
 
+
 // Global Error Handler
 app.use("/api", authRoute);
+app.use("/api", userRouter);
 app.use((err, req, res, next) => {
   console.error('Error:', err);
   res.status(500).json({ message: 'Internal Server Error' });
